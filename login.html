@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>เข้าสู่ระบบ</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .router-link-active {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <!-- Navigation -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container">
+                <a class="navbar-brand" href="#">ระบบจัดการผู้ใช้</a>
+                <div class="navbar-nav">
+                    <a class="nav-link" href="login.html">เข้าสู่ระบบ</a>
+                    <a class="nav-link" href="register.html">ลงทะเบียน</a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Login Page -->
+        <div class="container mt-5">
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <h2 class="text-center mb-4">เข้าสู่ระบบ</h2>
+                    <form id="loginForm">
+                        <div class="mb-3">
+                            <label for="username" class="form-label">ชื่อผู้ใช้งาน</label>
+                            <input type="text" class="form-control" id="username" required>
+                            <div class="invalid-feedback">กรุณากรอกชื่อผู้ใช้งาน</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">รหัสผ่าน</label>
+                            <input type="password" class="form-control" id="password" required>
+                            <div class="invalid-feedback">กรุณากรอกรหัสผ่าน</div>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">เข้าสู่ระบบ</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Vue.js 3 -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <!-- Axios -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        const loginForm = document.getElementById('loginForm');
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('username');
+            const password = document.getElementById('password');
+
+            // Basic validation
+            if (!username.value) {
+                username.classList.add('is-invalid');
+                return;
+            } else {
+                username.classList.remove('is-invalid');
+            }
+
+            if (!password.value) {
+                password.classList.add('is-invalid');
+                return;
+            } else {
+                password.classList.remove('is-invalid');
+            }
+
+            try {
+                const response = await axios.post(
+                    'https://express-test-api-l0zc.onrender.com/login',
+                    {
+                        username: username.value,
+                        password: password.value
+                    }
+                );
+
+                // Store token
+                localStorage.setItem('token', response.data.token);
+                
+                // Redirect to profile page
+                window.location.href = 'profile.html';
+            } catch (error) {
+                console.error('Login error:', error);
+                alert(error.response?.data?.message || 'เกิดข้อผิดพลาดในการเข้าสู่ระบบ');
+            }
+        });
+    </script>
+</body>
+</html>
